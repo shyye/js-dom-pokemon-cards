@@ -18,12 +18,34 @@ function renderCards() {
         li.classList.add("card")
         li.innerHTML = `
             <h2 class="card--title">${pokemon.name}</h2>
-            <img
-                width="256"
-                class="card--img"
-                src="${pokemon.sprites.other["official-artwork"].front_default}"
-            />
         `
+        const img = document.createElement("img")
+        img.width = 256
+        img.classList.add("card--img")
+        img.src = pokemon.sprites.other["official-artwork"].front_default
+        li.append(img)
+
+
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries
+        let imgList = []
+        for (const [key, value] of Object.entries(pokemon.sprites)) {
+            if (key === "other") {
+                imgList.push(pokemon.sprites.other["official-artwork"].front_default)
+                break
+            } else if(value !== null) {
+                imgList.push(value)
+            }
+        }
+
+        // Toggle images
+        li.addEventListener('click', (event) => {
+            let index = imgList.indexOf(event.target.src)
+            if (index + 1 === imgList.length) {
+                index = -1  // To select index 0 in next step
+            }
+            img.src = imgList[index + 1]
+        })
+
         const innerUL = document.createElement("ul")
         innerUL.classList.add("card--text")
         pokemon.stats.forEach((stats) => {
